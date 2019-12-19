@@ -111,9 +111,10 @@ func KeycloakRolesWithConfig(config KeycloakRolesConfig) echo.MiddlewareFunc {
 						for _, r := range rolesRaw {
 							roles = append(roles, r.(string))
 						}
+						err = ErrRolesInvalid
 						for _, r := range config.KeycloakRoles {
-							if !funk.ContainsString(roles, r) {
-								err = ErrRolesInvalid
+							if funk.ContainsString(roles, r) {
+								err = nil
 								break
 							}
 						}

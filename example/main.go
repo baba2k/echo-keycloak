@@ -1,0 +1,30 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+
+	"github.com/baba2k/echo-keycloak"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+)
+
+func main() {
+	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	restricted := e.Group("/restricted",
+		keycloak.Keycloak("http://localhost:8080", "test"))
+
+	restricted.GET("", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
+
+	restricted.GET("/admin", func(c echo.Context) error {
+		return c.String(http.StatusOK, fmt.Sprintf("Hello, Admin! My roles are: %+v", c.Get("roles").([]string)))
+	}, keycloak.KeycloakRoles([]string{"admin"}))
+
+	e.Logger.Fatal(e.Start(":8080"))
+}

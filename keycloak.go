@@ -192,7 +192,7 @@ func tokenFromHeader(header string, authScheme string) tokenExtractor {
 	return func(c echo.Context) (string, error) {
 		auth := c.Request().Header.Get(header)
 		l := len(authScheme)
-		if len(auth) > l+1 && auth[:l] == authScheme {
+		if len(auth) > l+1 && strings.ToLower(auth[:l]) == strings.ToLower(authScheme) {
 			return auth[l+1:], nil
 		}
 		return "", ErrTokenMissing

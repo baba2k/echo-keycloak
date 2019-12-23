@@ -16,6 +16,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	restricted := e.Group("/restricted",
+		// init echo-keycloak middleware with keycloak host and realm
 		keycloak.Keycloak("http://localhost:8080", "test"))
 
 	restricted.GET("", func(c echo.Context) error {
@@ -23,7 +24,10 @@ func main() {
 	})
 
 	restricted.GET("/admin", func(c echo.Context) error {
-		return c.String(http.StatusOK, fmt.Sprintf("Hello, Admin! My roles are: %+v", c.Get("roles").([]string)))
+		return c.String(http.StatusOK,
+			fmt.Sprintf("Hello, Admin! My roles are: %+v",
+				c.Get("roles").([]string)))
+		// init echo-keycloak-roles middleware with role "admin"
 	}, keycloak.KeycloakRoles([]string{"admin"}))
 
 	e.Logger.Fatal(e.Start(":8080"))

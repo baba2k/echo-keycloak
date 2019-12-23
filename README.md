@@ -8,6 +8,8 @@ The echo-keycloak-roles middleware validates given roles with keycloak client or
 ## General
 * echo-keycloak middleware must be executed before echo-keycloak-roles middleware
 * Context key of echo-keycloak middleware and echo-keycloak-roles middleware must be equal
+* Client and user roles are supported
+* The client or user must have *one* of the given roles to get access
 
 ## Example
 ```go

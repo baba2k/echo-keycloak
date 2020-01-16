@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/baba2k/echo-keycloak"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -20,12 +22,16 @@ func main() {
 		keycloak.Keycloak("http://localhost:8080", "test"))
 
 	restricted.GET("", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
+		token := c.Get("user").(*jwt.Token)
+		claims := token.Claims.(jwt.MapClaims)
+		prettyJSONClaims, _ := json.MarshalIndent(claims, "", "   ")
+		return c.String(http.StatusOK, fmt.Sprintf(
+			"Hello, User! Your claims are:\n%+v\n", string(prettyJSONClaims)))
 	})
 
 	restricted.GET("/admin", func(c echo.Context) error {
 		return c.String(http.StatusOK,
-			fmt.Sprintf("Hello, Admin! My roles are: %+v",
+			fmt.Sprintf("Hello, Admin! Your roles are: %+v\n",
 				c.Get("roles").([]string)))
 		// init echo-keycloak-roles middleware with role "admin"
 	}, keycloak.KeycloakRoles([]string{"admin"}))

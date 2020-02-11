@@ -10,6 +10,7 @@ The echo-keycloak-roles middleware validates given roles with keycloak client or
 * Context key of echo-keycloak middleware and echo-keycloak-roles middleware must be equal
 * Client and user roles are supported
 * The client or user must have *one* of the given roles to get access. Use multiple instances of echo-keycloak-roles middleware if a route requires multiple roles
+* Claim type in echo-keycloak middleware must be jwt.MapClaims (default) for echo-keycloak-roles middleware 
 
 ## Examples
 [Simple example](./example/main.go)

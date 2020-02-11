@@ -13,6 +13,7 @@ import (
 
 func main() {
 	e := echo.New()
+	e.HideBanner = true
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -23,7 +24,7 @@ func main() {
 
 	restricted.GET("", func(c echo.Context) error {
 		token := c.Get("user").(*jwt.Token)
-		claims := token.Claims.(jwt.MapClaims)
+		claims := token.Claims.(*jwt.MapClaims)
 		prettyJSONClaims, _ := json.MarshalIndent(claims, "", "   ")
 		return c.String(http.StatusOK, fmt.Sprintf(
 			"Hello, User! Your claims are:\n%+v\n", string(prettyJSONClaims)))

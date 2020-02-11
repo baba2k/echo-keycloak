@@ -96,11 +96,11 @@ func KeycloakRolesWithConfig(config KeycloakRolesConfig) echo.MiddlewareFunc {
 			var err error
 			var roles []string
 			token := c.Get(DefaultKeycloakRolesConfig.TokenContextKey).(*jwt.Token)
-			claims, ok := token.Claims.(jwt.MapClaims)
-			if !ok {
+			claims, ok := token.Claims.(*jwt.MapClaims)
+			if !ok || claims == nil {
 				err = ErrClaimsMissing
 			} else {
-				realmAcces, ok := claims["realm_access"].(map[string]interface{})
+				realmAcces, ok := (*claims)["realm_access"].(map[string]interface{})
 				if !ok {
 					err = ErrRealmAccessMissing
 				} else {

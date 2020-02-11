@@ -1,7 +1,9 @@
 package keycloak
 
 import (
+	"errors"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"github.com/Nerzal/gocloak/v4"
@@ -160,10 +162,12 @@ func KeycloakWithConfig(config KeycloakConfig) echo.MiddlewareFunc {
 				return err
 			}
 			token := new(jwt.Token)
-			if _, ok := config.Claims.(jwt.Claims); ok {
-				token, err = config.gocloakClient.DecodeAccessTokenCustomClaims(auth, config.KeycloakRealm, config.Claims)
+			claims := reflect.ValueOf(config.Claims).Interface()
+
+			if claims, ok := claims.(jwt.Claims); ok {
+				token, err = config.gocloakClient.DecodeAccessTokenCustomClaims(auth, config.KeycloakRealm, claims)
 			} else {
-				token, config.Claims, err = config.gocloakClient.DecodeAccessToken(auth, config.KeycloakRealm)
+				err = errors.New("invalid claims type: " + reflect.TypeOf(claims).Name())
 			}
 			if err == nil && token.Valid {
 				c.Set(config.ContextKey, token)

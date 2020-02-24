@@ -82,6 +82,9 @@ func KeycloakRolesWithConfig(config KeycloakRolesConfig) echo.MiddlewareFunc {
 	if config.TokenContextKey == "" {
 		config.TokenContextKey = DefaultKeycloakRolesConfig.TokenContextKey
 	}
+	if config.RolesContextKey == "" {
+		config.TokenContextKey = DefaultKeycloakRolesConfig.RolesContextKey
+	}
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {

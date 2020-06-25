@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Nerzal/gocloak/v4"
+	"github.com/Nerzal/gocloak/v5"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
